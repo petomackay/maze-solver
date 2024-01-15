@@ -9,6 +9,16 @@ class Point:
         self.y = y
 
 
+    def halfway(self, other):
+        x_delta = (other.x - self.x) // 2
+        y_delta = (other.y - self.y) // 2
+        return Point(self.x + x_delta, self.y + y_delta)
+
+
+    def __str__(self):
+        return f"[{self.x}, {self.y}]"
+
+
 class Line:
     def __init__(self, a, b):
         self.__a = a
@@ -34,6 +44,9 @@ class Cell:
         self.__window = window
 
         
+    def get_center(self):
+        return self.__btm_right.halfway(self.__top_left)
+
     def draw(self, color):
         top_right = Point(self.__btm_right.x, self.__top_left.y)
         btm_left = Point(self.__top_left.x, self.__btm_right.y)
@@ -46,8 +59,16 @@ class Cell:
         for wall in walls:
             if wall[0]:
                 print(f"Drawing wall from: {wall[1].x}, {wall[1].y} to: {wall[2].x}, {wall[2].y}")
-                self.__window.draw_line(Line(wall[1], wall[2]), color)
+                self.__draw_line(Line(wall[1], wall[2]), color)
     
+
+    def draw_move(self, to_cell, undo=False):
+        color = "pink" if undo else "red"
+        self.__draw_line(Line(self.get_center(), to_cell.get_center()), color)
+
+
+    def __draw_line(self, line, color):
+        self.__window.draw_line(line, color)
 
 
 class Window:
@@ -85,11 +106,17 @@ class Window:
 def main():
     win = Window(800,600)
 
-    Cell(Point(50,50), Point(100,100), win).draw("black")
-    Cell(Point(100,100), Point(200,200), win).draw("red")
-    Cell(Point(200,200), Point(250,250), win).draw("green")
+    cell_1 = Cell(Point(50,50), Point(100,100), win)
+    cell_1.draw("black")
+    cell_2 = Cell(Point(100,100), Point(200,200), win)
+    cell_2.draw("red")
+    cell_3 = Cell(Point(200,200), Point(250,250), win)
+    cell_3.draw("green")
     border = Cell(Point(2,2), Point(798,598), win)
     border.draw("cyan")
+
+    cell_1.draw_move(cell_2)
+    cell_2.draw_move(cell_3, True)
 
     win.wait_for_close()
 
