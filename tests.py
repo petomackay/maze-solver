@@ -33,5 +33,25 @@ class Tests(unittest.TestCase):
         )
 
 
+    def test_entrance_and_exit(self):
+        num_cols = num_rows = cell_width = cell_height = 8
+        maze = Maze(Point(0,0), num_rows, num_cols, cell_width, cell_height)
+        first_cell = maze._cells[0][0]
+        self.assertTrue(not first_cell.has_top_wall)
+        last_cell = maze._cells[num_cols - 1][num_rows - 1]
+        self.assertTrue(not last_cell.has_bottom_wall)
+
+
+    def test_entrance_and_exit_single_cell(self):
+        num_cols = num_rows = 1
+        cell_width = cell_height = 8
+        maze = Maze(Point(0,0), num_rows, num_cols, cell_width, cell_height)
+        first_cell = maze._cells[0][0]
+        self.assertTrue(not first_cell.has_top_wall)
+        last_cell = maze._cells[num_cols - 1][num_rows - 1]
+        self.assertTrue(not last_cell.has_bottom_wall)
+        self.assertTrue(not last_cell.has_top_wall)
+        
+
 if __name__ == "__main__":
     unittest.main()

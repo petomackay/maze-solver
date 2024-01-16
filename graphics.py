@@ -1,5 +1,7 @@
 from tkinter import Tk, BOTH, Canvas
 
+BACKGROUND_COLOR = "gray"
+
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -50,6 +52,7 @@ class Cell:
         self._top_left = top_left
         self._btm_right = btm_right
         self.__window = window
+        self.visited = False
 
         
     def get_center(self):
@@ -70,6 +73,8 @@ class Cell:
             if wall[0]:
                 #print(f"Drawing wall from: {wall[1]} to: {wall[2]}")
                 self.__draw_line(Line(wall[1], wall[2]), color)
+            else:
+                self.__draw_line(Line(wall[1], wall[2]), BACKGROUND_COLOR)
     
 
     def draw_move(self, to_cell, undo=False):
@@ -88,7 +93,7 @@ class Window:
         self.__root.geometry(f"{width}x{height}")
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
 
-        self.canvas = Canvas(master = self.__root, cnf={"bg": "gray"})
+        self.canvas = Canvas(master = self.__root, cnf={"bg": BACKGROUND_COLOR})
         self.canvas.pack(fill=BOTH, expand=True)
 
         self.is_running = False
