@@ -50,9 +50,6 @@ class Maze:
 
 
     def _break_walls_r(self, x, y):
-        if x == self.__num_cols - 1 and y == self.__num_rows - 1:
-            return True
-
         directions = (
             (0, -1), # up
             (1, 0),  # right
@@ -97,10 +94,9 @@ class Maze:
                 
             current_cell.draw("black")
             next_cell.draw("black")
-            # self._animate(0.1)
+            #self._animate(0.1)
 
-            if self._break_walls_r(n_x, n_y):
-                return True
+            self._break_walls_r(n_x, n_y)
 
         return False
 
