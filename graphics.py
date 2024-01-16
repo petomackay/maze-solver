@@ -16,6 +16,17 @@ class Point:
         return f"[{self.x}, {self.y}]"
 
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+
+    def __add__(self, other):
+        return Point(
+            self.x  + other.x,
+            self.y + other.y
+        )
+
+
 class Line:
     def __init__(self, a, b):
         self.__a = a
@@ -36,22 +47,24 @@ class Cell:
         self.has_right_wall = True
         self.has_top_wall = True
         self.has_bottom_wall = True
-        self.__top_left = top_left
-        self.__btm_right = btm_right
+        self._top_left = top_left
+        self._btm_right = btm_right
         self.__window = window
 
         
     def get_center(self):
-        return self.__btm_right.halfway(self.__top_left)
+        return self._btm_right.halfway(self._top_left)
 
     def draw(self, color):
-        top_right = Point(self.__btm_right.x, self.__top_left.y)
-        btm_left = Point(self.__top_left.x, self.__btm_right.y)
+        if self.__window is None:
+            return
+        top_right = Point(self._btm_right.x, self._top_left.y)
+        btm_left = Point(self._top_left.x, self._btm_right.y)
         walls = (
-            (self.has_top_wall, self.__top_left, top_right),
-            (self.has_right_wall, top_right, self.__btm_right),
-            (self.has_bottom_wall, self.__btm_right, btm_left),
-            (self.has_left_wall, btm_left, self.__top_left)
+            (self.has_top_wall, self._top_left, top_right),
+            (self.has_right_wall, top_right, self._btm_right),
+            (self.has_bottom_wall, self._btm_right, btm_left),
+            (self.has_left_wall, btm_left, self._top_left)
         )
         for wall in walls:
             if wall[0]:
