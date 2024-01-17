@@ -9,12 +9,11 @@ def main():
     maze_start = Point(50, 50)
     maze = Maze(
         starting_point=maze_start,
-        num_rows=13,
-        num_cols=14,
-        cell_width=50,
-        cell_height=40,
+        num_rows=26,
+        num_cols=35,
+        cell_width=20,
+        cell_height=20,
         window=win,
-        seed=100,
     )
 
     maze.solve()
