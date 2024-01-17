@@ -5,6 +5,14 @@ from time import sleep
 
 
 class Maze:
+
+    _directions = (
+        (0, -1), # up
+        (1, 0),  # right
+        (0, 1),  # down
+        (-1, 0)  # left
+    )
+
     def __init__(self,
                  starting_point,
                  num_rows,
@@ -29,6 +37,42 @@ class Maze:
         self._reset_cells_visited()
 
 
+    def solve(self):
+        self._solve_r(0,0)
+
+
+    def _solve_r(self, x ,y):
+        current_cell = self._cells[x][y]
+        current_cell.visited = True
+        if x == self.__num_cols - 1 and y == self.__num_rows - 1:
+            return True
+
+        for d in self._directions:
+            new_x = x + d[0]
+            new_y = y + d[1]
+            if not self._is_in_bounds(new_x, new_y):
+                continue
+            next_cell = self._cells[new_x][new_y]
+
+            if next_cell.visited or                            \
+                (new_x > x and current_cell.has_right_wall) or \
+                (new_x < x and current_cell.has_left_wall) or  \
+                (new_y < y and current_cell.has_top_wall) or   \
+                (new_y > y and current_cell.has_bottom_wall):
+                continue
+
+            current_cell.draw_move(next_cell)
+            self._animate(0.1)
+            if self._solve_r(new_x, new_y):
+                return True
+            else:
+                current_cell.draw_move(next_cell, True)
+                self._animate(0.1)
+
+        return False
+
+
+
     def _create_cells(self):
         self._cells = [
             # I know ...
@@ -51,23 +95,14 @@ class Maze:
 
 
     def _break_walls_r(self, x, y):
-        directions = (
-            (0, -1), # up
-            (1, 0),  # right
-            (0, 1),  # down
-            (-1, 0)  # left
-        )
         current_cell = self._cells[x][y]
         current_cell.visited = True
 
-        def is_in_bounds(x, y):
-            return 0 <= x < self.__num_cols and 0 <= y < self.__num_rows
-
         possible_moves = []
-        for d in directions:
+        for d in self._directions:
             new_x = x + d[0]
             new_y = y + d[1]
-            if is_in_bounds(new_x, new_y) and not self._cells[new_x][new_y].visited:
+            if self._is_in_bounds(new_x, new_y) and not self._cells[new_x][new_y].visited:
                 possible_moves.append((new_x, new_y))
 
         while possible_moves:
@@ -100,6 +135,10 @@ class Maze:
             self._break_walls_r(n_x, n_y)
 
         return False
+
+    
+    def _is_in_bounds(self, x, y):
+        return 0 <= x < self.__num_cols and 0 <= y < self.__num_rows
 
 
     def _reset_cells_visited(self):

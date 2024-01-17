@@ -16,6 +16,8 @@ def main():
         seed=100
     )
 
+    maze.solve()
+
     win.wait_for_close()
 
 
